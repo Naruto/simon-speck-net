@@ -1,0 +1,179 @@
+##############################################################################
+# General
+##############################################################################
+
+# OS junk files
+[Tt]humbs.db
+*.DS_Store
+
+# Visual Studio / MonoDevelop
+*.[Oo]bj
+*.exe
+*.dll
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.resources
+*.res
+ipch/
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+*.gpState
+.vscode/
+*.exp
+
+# Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+*.orig
+*.rej
+
+# NuGet packages
+!.nuget/*
+[Pp]ackages/*
+![Pp]ackages/repositories.config
+
+# Temporary Files
+~.*
+~$*
+
+# Autotools-generated files
+/Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+/build/
+config.cache
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+configure.scan
+cygconfig.h
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+mkinstalldirs
+releases
+stamp-h
+stamp-h1
+stamp-h.in
+/test-driver
+*~
+*.swp
+*.o
+.deps
+
+# Libtool
+libtool.m4
+lt~obsolete.m4
+ltoptions.m4
+ltsugar.m4
+ltversion.m4
+
+# Dolt (libtool replacement)
+doltlibtool
+doltcompile
+
+# pkg-config
+*.pc
+
+# Emacs
+semantic.cache
+
+# gtags
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+
+# Doxygen
+docs/doxygen*
+docs/perlmod*
+
+
+##############################################################################
+# Mono-specific patterns
+##############################################################################
+
+.dirstamp
+compile
+mono.h
+mono-*.tar.*
+tmpinst-dir.stamp
+msvc/scripts/inputs/
+extensions-config.h
+overs JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
+
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle:
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# CMake
+cmake-build-debug/
+
+# Mongo Explorer plugin:
+.idea/**/mongoSettings.xml
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
