@@ -4,6 +4,137 @@ using System.Security.Cryptography;
 
 namespace Speck
 {
+
+    internal static class Utils
+    {
+        private static RNGCryptoServiceProvider rng = null;
+
+        public static RNGCryptoServiceProvider getRNG()
+        {
+            if (rng == null)
+            {
+                rng = new RNGCryptoServiceProvider();
+            }
+            return rng;
+        }
+    }
+
+    internal static class Pad
+    {
+        public static byte[] PadBlock(PaddingMode paddingMode, int inputBlockSize, byte[] block, int offset, int count)
+        {
+            byte[] result = null;
+            int padBytes = inputBlockSize - (count % inputBlockSize);
+
+            switch (paddingMode)
+            {
+                case PaddingMode.ANSIX923:
+                    result = new byte[count + padBytes];
+                    Buffer.BlockCopy(block, 0, result, 0, count);
+                    result[result.Length - 1] = (byte) padBytes;
+                    break;
+                case PaddingMode.ISO10126:
+                    result = new byte[count + padBytes];
+                    byte[] random = new byte[result.Length - 1];
+                    Utils.getRNG().GetBytes(random);
+                    Buffer.BlockCopy(random, 0, result, 0, result.Length - 1);
+                    Buffer.BlockCopy(block, 0, result, 0, count);
+                    result[result.Length - 1] = (byte) padBytes;
+                    break;
+                case PaddingMode.None:
+                    if (count % inputBlockSize != 0)
+                    {
+                        throw new CryptographicException();
+                    }
+                    result = new byte[count];
+                    Buffer.BlockCopy(block, offset, result, 0, result.Length);
+                    break;
+                case PaddingMode.PKCS7:
+                    result = new byte[count + padBytes];
+                    Buffer.BlockCopy(block, offset, result, 0, count);
+
+                    for (int i = count; i < result.Length; i++) {
+                        result[i] = (byte)padBytes;
+                    }
+                    break;
+                case PaddingMode.Zeros:
+                    if (padBytes == inputBlockSize)
+                    {
+                        padBytes = 0;
+                    }
+                    result = new byte[count + padBytes];
+                    Buffer.BlockCopy(block, offset, result, 0, count);
+                    break;
+                default:
+                    throw new CryptographicException();
+            }
+            
+            return result;
+        }
+        
+        public static byte[] DepadBlock(PaddingMode paddingMode, int inputBlockSize, byte[] block, int offset, int count) {
+            int padBytes = 0;
+
+            switch (paddingMode) {
+                case PaddingMode.ANSIX923:
+                    padBytes = block[offset + count - 1];
+
+                    if (padBytes <= 0 || padBytes > inputBlockSize)
+                    {
+                        throw new CryptographicException();
+                    }
+
+                    for (int i = offset + count - padBytes; i < offset + count - 1; i++) {
+                        if (block[i] != 0)
+                        {
+                            throw new CryptographicException();
+                        }
+                    }
+
+                    break;
+
+                case PaddingMode.ISO10126:
+                    padBytes = block[offset + count - 1];
+
+                    if (padBytes <= 0 || padBytes > inputBlockSize)
+                    {
+                        throw new CryptographicException();
+                    }
+
+                    break;
+
+                case PaddingMode.PKCS7:
+                    padBytes = block[offset + count - 1];
+
+                    if (padBytes <= 0 || padBytes > inputBlockSize)
+                    {
+                        throw new CryptographicException();
+                    }
+
+                    for (int i = offset + count - padBytes; i < offset + count; i++) {
+                        if (block[i] != padBytes)
+                        {
+                            throw new CryptographicException();
+                        }
+                    }
+
+                    break;
+
+                case PaddingMode.Zeros:
+                case PaddingMode.None:
+                    padBytes = 0;
+                    break;
+
+                default:
+                    throw new CryptographicException();
+            }
+
+            byte[] depadded = new byte[count - padBytes];
+            Buffer.BlockCopy(block, offset, depadded, 0, depadded.Length);
+            return depadded;
+        }
+    }
+    
     public class Speck : SymmetricAlgorithm
     {
         private static KeySizes[] legalBlocKeySizeses =
@@ -22,32 +153,31 @@ namespace Speck
             BlockSizeValue = 128;
             FeedbackSizeValue = BlockSizeValue;
             this.ModeValue = CipherMode.ECB;
-            this.PaddingValue = PaddingMode.None;
+            this.PaddingValue = PaddingMode.PKCS7;
         }
         
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            return new SpeckDecryptoTransform(rgbKey, rgbIV);
+            
+            return new SpeckDecryptoTransform(rgbKey, rgbIV, BlockSize, PaddingValue);
         }
 
         public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV)
         {
-            return new SpeckEncryptoTransform(rgbKey, rgbIV);
+            return new SpeckEncryptoTransform(rgbKey, rgbIV, BlockSize, PaddingValue);
         }
 
         public override void GenerateIV()
         {
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] data = new byte[KeySizeValue / 8];
-            rng.GetBytes(data);
+            Utils.getRNG().GetBytes(data);
             IV = data;
         }
 
         public override void GenerateKey()
         {
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] data = new byte[KeySizeValue / 8];
-            rng.GetBytes(data);
+            Utils.getRNG().GetBytes(data);
             Key = data;
         }
     }
@@ -92,110 +222,54 @@ namespace Speck
         public void Dispose()
         {
             if (_ctx == IntPtr.Zero) return;
-            // speck_finish(out _ctx);
+            speck_finish(out _ctx);
             _ctx = IntPtr.Zero;
         }
 
         public unsafe int EncryptECB(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outBuffer, int outOffset)
         {
-            // TODO: argument check
-
             int r;
-            fixed (byte* _in = &inputBuffer[inputOffset])
+            fixed (byte* _in = &inputBuffer[inputOffset], _out = &outBuffer[outOffset])
             {
-                fixed (byte* _out = &outBuffer[outOffset])
-                {
-                    r = speck_ecb_encrypt(_ctx, new IntPtr(_in), new IntPtr(_out), inputCount);
-                }
+                r = speck_ecb_encrypt(_ctx, new IntPtr(_in), new IntPtr(_out), inputCount);
             }
             return r;
         }
         
         public unsafe int DecryptECB(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outBuffer, int outOffset)
         {
-            // TODO: argument check
-
             int r;
-            fixed (byte* _in = &inputBuffer[inputOffset])
+            fixed (byte* _in = &inputBuffer[inputOffset], _out = &outBuffer[outOffset])
             {
-                fixed (byte* _out = &outBuffer[outOffset])
-                {
-                    r = speck_ecb_decrypt(_ctx, new IntPtr(_in), new IntPtr(_out), inputCount);
-                }
+                r = speck_ecb_decrypt(_ctx, new IntPtr(_in), new IntPtr(_out), inputCount);
             }
-
             return r;
         }
     }
     
-    public class SpeckDecryptoTransform : ICryptoTransform
-    {
-        private SpeckContext _speckContext;
-        
-        public SpeckDecryptoTransform(byte[] rgbKey, byte[] rgbIV)
-        {
-            _speckContext = new SpeckContext(rgbKey);
-            if (_speckContext == null)
-            {
-                throw new ArgumentException();
-            }
-        }
-        
-        public void Dispose()
-        {
-            _speckContext.Dispose();
-        }
-
-        public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
-        {
-            // TODO: argument check
-            
-            // TODO: padding check
-
-            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
-            if (r != 0)
-            {
-                return -1;
-            }
-            
-            return 0;
-        }
-
-        public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
-        {
-            // TODO: argument check
-            
-            // TODO: padding check
-
-            byte[] decryptBuffer = new byte[inputCount];
-
-            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref decryptBuffer, 0);
-            if (r != 0)
-            {
-                return null;
-            }
-            
-            // TODO: depadd check
-            return decryptBuffer;
-        }
-
-        public bool CanReuseTransform { get { return true;} }
-        public bool CanTransformMultipleBlocks { get { return true;} }
-        public int InputBlockSize { get; }
-        public int OutputBlockSize { get; }
-    }
-
     public class SpeckEncryptoTransform : ICryptoTransform
     {
         private SpeckContext _speckContext;
+        private readonly byte[] _iv;
+        private readonly PaddingMode _paddingMode;
+        private readonly int _blockSize;
+
         
-        public SpeckEncryptoTransform(byte[] rgbKey, byte[] rgbIV)
+        public SpeckEncryptoTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, PaddingMode paddingMode)
         {
             _speckContext = new SpeckContext(rgbKey);
             if (_speckContext == null)
             {
                 throw new ArgumentException();
             }
+            _speckContext = new SpeckContext(rgbKey);
+            if (_speckContext == null)
+            {
+                throw new ArgumentException();
+            }
+            _iv = rgbIV; // not use
+            _blockSize = blockSize;
+            _paddingMode = paddingMode;
         }
         
         public void Dispose()
@@ -205,7 +279,33 @@ namespace Speck
 
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
-            // TODO: argument check
+            if (inputBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(inputBuffer));
+            }
+            if (inputOffset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+            }
+            if (inputCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount % InputBlockSize != 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount > inputBuffer.Length - inputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (outputBuffer == null) {
+                throw new ArgumentNullException(nameof(outputBuffer));
+            }
+            if (inputCount > outputBuffer.Length - outputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(outputOffset));
+            }
             
             // TODO: padding check
 
@@ -220,13 +320,156 @@ namespace Speck
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            // TODO: argument check
+            if (inputBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(inputBuffer));
+            }
+            if (inputOffset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+            }
+            if (inputCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount > inputBuffer.Length - inputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
             
-            // TODO: padding check
+            byte[] tmpData = null;
+            tmpData = Pad.PadBlock(_paddingMode, _blockSize, inputBuffer, inputOffset, inputCount);
+            if (tmpData.Length > 0)
+            {
+                byte[] outData = new byte[tmpData.Length];
+                int r = _speckContext.EncryptECB(tmpData, 0, tmpData.Length, ref outData, 0);
+                if (r != 0)
+                {
+                    return null;
+                }
+                return outData;
+            }
 
+            return null;
+        }
+
+        public bool CanReuseTransform
+        {
+            get { return true; }
+        }
+
+        public bool CanTransformMultipleBlocks
+        {
+            get { return true; }
+        }
+
+        public int InputBlockSize
+        {
+            get { return _blockSize / 8; }
+        }
+
+        public int OutputBlockSize
+        {
+            get { return _blockSize / 8; }
+        }
+    }
+    
+    public class SpeckDecryptoTransform : ICryptoTransform
+    {
+        private SpeckContext _speckContext;
+        private readonly byte[] _iv;
+        private readonly PaddingMode _paddingMode;
+        private readonly int _blockSize;
+        private byte[] _depadBuffer;
+        
+        public SpeckDecryptoTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, PaddingMode paddingMode)
+        {
+            _speckContext = new SpeckContext(rgbKey);
+            if (_speckContext == null)
+            {
+                throw new ArgumentException();
+            }
+            _iv = rgbIV; // not use
+            _blockSize = blockSize;
+            _paddingMode = paddingMode;
+        }
+        
+        public void Dispose()
+        {
+            _speckContext.Dispose();
+            
+            if (_depadBuffer != null) {
+                Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
+            }
+        }
+        
+        public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
+        {
+            if (inputBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(inputBuffer));
+            }
+            if (inputOffset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+            }
+            if (inputCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount % InputBlockSize != 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount > inputBuffer.Length - inputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (outputBuffer == null) {
+                throw new ArgumentNullException(nameof(outputBuffer));
+            }
+            if (inputCount > outputBuffer.Length - outputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(outputOffset));
+            }
+            
+            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
+            if (r != 0)
+            {
+                return -1;
+            }
+            
+            return 0;
+        }
+
+        public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
+        {
+            if (inputBuffer == null)
+            {
+                throw new ArgumentNullException(nameof(inputBuffer));
+            }
+            if (inputOffset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+            }
+            if (inputCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            if (inputCount > inputBuffer.Length - inputOffset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(inputCount));
+            }
+            
+            if (inputCount % InputBlockSize != 0)
+            {
+                throw new CryptographicException();
+            }
+            
+            
             byte[] decryptBuffer = new byte[inputCount];
 
-            int r = _speckContext.EncryptECB(inputBuffer, inputOffset, inputCount, ref decryptBuffer, 0);
+            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref decryptBuffer, 0);
             if (r != 0)
             {
                 return null;
@@ -236,10 +479,24 @@ namespace Speck
             return decryptBuffer;
         }
 
-        public bool CanReuseTransform { get { return true;} }
-        public bool CanTransformMultipleBlocks { get { return true;} }
-        public int InputBlockSize { get; }
-        public int OutputBlockSize { get; }
+        public bool CanReuseTransform
+        {
+            get { return true; }
+        }
 
+        public bool CanTransformMultipleBlocks
+        {
+            get { return true; }
+        }
+
+        public int InputBlockSize
+        {
+            get { return _blockSize / 8; }
+        }
+
+        public int OutputBlockSize
+        {
+            get { return _blockSize / 8; }
+        }
     }
 }
