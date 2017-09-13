@@ -203,7 +203,7 @@ namespace Speck
         private static extern int speck_ecb_decrypt(IntPtr ctx, IntPtr _in, IntPtr _out, int len);
 
         [DllImport(LibraryName)]
-        private static extern void speck_finish(out IntPtr ctx);
+        private static extern void speck_finish(IntPtr ctx);
         
         public SpeckContext(byte[] rgbKey)
         {
@@ -222,7 +222,7 @@ namespace Speck
         public void Dispose()
         {
             if (_ctx == IntPtr.Zero) return;
-            speck_finish(out _ctx);
+            speck_finish(_ctx);
             _ctx = IntPtr.Zero;
         }
 
@@ -253,7 +253,7 @@ namespace Speck
         private readonly byte[] _iv;
         private readonly PaddingMode _paddingMode;
         private readonly int _blockSize;
-
+        private byte[] _depadBuffer;
         
         public SpeckEncryptoTransform(byte[] rgbKey, byte[] rgbIV, int blockSize, PaddingMode paddingMode)
         {
@@ -270,11 +270,16 @@ namespace Speck
             _iv = rgbIV; // not use
             _blockSize = blockSize;
             _paddingMode = paddingMode;
+            _depadBuffer = null;
         }
         
         public void Dispose()
         {
             _speckContext.Dispose();
+            if (_depadBuffer != null)
+            {
+                Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
+            }
         }
 
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
@@ -306,8 +311,6 @@ namespace Speck
             {
                 throw new ArgumentOutOfRangeException(nameof(outputOffset));
             }
-            
-            // TODO: padding check
 
             int r = _speckContext.EncryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
             if (r != 0)
@@ -315,7 +318,7 @@ namespace Speck
                 return -1;
             }
             
-            return 0;
+            return inputCount;
         }
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
@@ -336,21 +339,31 @@ namespace Speck
             {
                 throw new ArgumentOutOfRangeException(nameof(inputCount));
             }
-            
-            byte[] tmpData = null;
-            tmpData = Pad.PadBlock(_paddingMode, _blockSize, inputBuffer, inputOffset, inputCount);
+
+            byte[] outData = null;
+            byte[] tmpData = Pad.PadBlock(_paddingMode, _blockSize, inputBuffer, inputOffset, inputCount);
             if (tmpData.Length > 0)
             {
-                byte[] outData = new byte[tmpData.Length];
+                outData = new byte[tmpData.Length];
                 int r = _speckContext.EncryptECB(tmpData, 0, tmpData.Length, ref outData, 0);
                 if (r != 0)
                 {
                     return null;
                 }
-                return outData;
             }
+            
+            Reset();
+            
+            return outData;
+        }
 
-            return null;
+        private void Reset()
+        {
+            if (_depadBuffer != null)
+            {
+                Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
+                _depadBuffer = null;
+            }
         }
 
         public bool CanReuseTransform
@@ -398,7 +411,8 @@ namespace Speck
         {
             _speckContext.Dispose();
             
-            if (_depadBuffer != null) {
+            if (_depadBuffer != null)
+            {
                 Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
             }
         }
@@ -432,14 +446,8 @@ namespace Speck
             {
                 throw new ArgumentOutOfRangeException(nameof(outputOffset));
             }
-            
-            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
-            if (r != 0)
-            {
-                return -1;
-            }
-            
-            return 0;
+
+            return DecryptBlocks(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
         }
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
@@ -465,20 +473,100 @@ namespace Speck
             {
                 throw new CryptographicException();
             }
-            
-            
-            byte[] decryptBuffer = new byte[inputCount];
 
-            int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref decryptBuffer, 0);
-            if (r != 0)
+            if (inputCount % InputBlockSize != 0)
             {
-                return null;
+                throw new CryptographicException();
             }
-            
-            // TODO: depadd check
-            return decryptBuffer;
+
+            byte[] outputData = null;
+            byte[] cipherText = null;
+
+            if (_depadBuffer == null) {
+                cipherText = new byte[inputCount];
+                Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, 0, inputCount);
+            }
+            else {
+                cipherText = new byte[_depadBuffer.Length + inputCount];
+                Buffer.BlockCopy(_depadBuffer, 0, cipherText, 0, _depadBuffer.Length);
+                Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, _depadBuffer.Length, inputCount);
+                
+            }
+
+            // Decrypt the data, then strip the padding to get the final decrypted data.
+            if (cipherText.Length > 0)
+            {
+                byte[] tmpData = new byte[cipherText.Length];
+                int r = _speckContext.DecryptECB(cipherText, 0, cipherText.Length, ref tmpData, 0);
+                if (r != 0)
+                {
+                    throw new CryptographicException();
+                }
+                outputData = Pad.DepadBlock(_paddingMode, InputBlockSize, tmpData, 0, tmpData.Length);
+            }
+            else
+            {
+                outputData = new byte[0];
+            }
+
+            return outputData;
         }
 
+        private int DecryptBlocks(byte[] inputBuffer, int inputOffset, int inputCount, ref byte[] outputBuffer, int outputOffset)
+        {
+            int decryptedBytes = 0;
+            if (_paddingMode != PaddingMode.None && _paddingMode != PaddingMode.Zeros)
+            {
+                // If we have data saved from a previous call, decrypt that into the output first
+                if (_depadBuffer != null)
+                {
+                    int r = _speckContext.DecryptECB(_depadBuffer, 0, _depadBuffer.Length, ref outputBuffer,
+                        outputOffset);
+                    if (r != 0)
+                    {
+                        throw new CryptographicException();
+                    }
+                    int depadDecryptLength = _depadBuffer.Length;
+                    Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
+                    outputOffset += depadDecryptLength;
+                    decryptedBytes += depadDecryptLength;
+                }
+                else
+                {
+                    _depadBuffer = new byte[InputBlockSize];
+                }
+                
+                // Copy the last block of the input buffer into the depad buffer
+                Buffer.BlockCopy(inputBuffer,
+                    inputOffset + inputCount - _depadBuffer.Length,
+                    _depadBuffer,
+                    0,
+                    _depadBuffer.Length);
+                inputCount -= _depadBuffer.Length;
+            }
+
+            if (inputCount > 0)
+            {
+                Buffer.BlockCopy(inputBuffer, inputOffset, outputBuffer, outputOffset, inputCount);
+                int r = _speckContext.DecryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
+                if (r != 0)
+                {
+                    throw new CryptographicException();
+                }
+                decryptedBytes += inputCount;
+            }
+            return decryptedBytes;
+        }
+        
+        private void Reset()
+        {
+            if (_depadBuffer != null)
+            {
+                Array.Clear(_depadBuffer, 0, _depadBuffer.Length);
+                _depadBuffer = null;
+            }
+        }
+        
         public bool CanReuseTransform
         {
             get { return true; }
