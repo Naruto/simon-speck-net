@@ -378,6 +378,8 @@ namespace Speck
                 outputData = new byte[0];
             }
 
+            Reset();
+
             return outputData;
         }
 
