@@ -205,7 +205,7 @@ namespace Speck
             }
 
             byte[] outData = null;
-            byte[] tmpData = Pad.PadBlock(_paddingMode, _blockSize, inputBuffer, inputOffset, inputCount);
+            byte[] tmpData = Pad.PadBlock(_paddingMode, InputBlockSize, inputBuffer, inputOffset, inputCount);
             if (tmpData.Length > 0)
             {
                 outData = new byte[tmpData.Length];
