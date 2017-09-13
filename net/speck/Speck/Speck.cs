@@ -72,7 +72,7 @@ namespace Speck
         private static extern int speck_ecb_decrypt(IntPtr ctx, IntPtr _in, IntPtr _out, int len);
 
         [DllImport(LibraryName)]
-        private static extern void speck_finish(IntPtr ctx);
+        private static extern void speck_finish(ref IntPtr ctx);
         
         public SpeckContext(byte[] rgbKey)
         {
@@ -91,7 +91,7 @@ namespace Speck
         public void Dispose()
         {
             if (_ctx == IntPtr.Zero) return;
-            speck_finish(_ctx);
+            speck_finish(ref _ctx);
             _ctx = IntPtr.Zero;
         }
 
