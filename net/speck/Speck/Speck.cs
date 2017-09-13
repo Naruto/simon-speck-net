@@ -21,6 +21,9 @@ namespace Speck
             KeySizeValue = 128;
             BlockSizeValue = 128;
             FeedbackSizeValue = BlockSizeValue;
+            LegalBlockSizesValue = Speck.legalBlocKeySizeses;
+            LegalKeySizesValue = Speck.legalKeySizes;
+            
             this.ModeValue = CipherMode.ECB;
             this.PaddingValue = PaddingMode.PKCS7;
         }
