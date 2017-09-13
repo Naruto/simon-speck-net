@@ -40,14 +40,14 @@ namespace Speck
         {
             byte[] data = new byte[KeySizeValue / 8];
             Utils.getRNG().GetBytes(data);
-            IV = data;
+            IVValue = data;
         }
 
         public override void GenerateKey()
         {
             byte[] data = new byte[KeySizeValue / 8];
             Utils.getRNG().GetBytes(data);
-            Key = data;
+            KeyValue = data;
         }
     }
 
@@ -131,11 +131,6 @@ namespace Speck
             {
                 throw new ArgumentException();
             }
-            _speckContext = new SpeckContext(rgbKey);
-            if (_speckContext == null)
-            {
-                throw new ArgumentException();
-            }
             _iv = rgbIV; // not use
             _blockSize = blockSize;
             _paddingMode = paddingMode;
@@ -155,30 +150,30 @@ namespace Speck
         {
             if (inputBuffer == null)
             {
-                throw new ArgumentNullException(nameof(inputBuffer));
+                throw new ArgumentNullException("inputBuffer");
             }
             if (inputOffset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+                throw new ArgumentOutOfRangeException("inputOffset");
             }
             if (inputCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount % InputBlockSize != 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount > inputBuffer.Length - inputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (outputBuffer == null) {
-                throw new ArgumentNullException(nameof(outputBuffer));
+                throw new ArgumentNullException("outputBuffer");
             }
             if (inputCount > outputBuffer.Length - outputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(outputOffset));
+                throw new ArgumentOutOfRangeException("outputOffset");
             }
 
             int r = _speckContext.EncryptECB(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
@@ -194,19 +189,19 @@ namespace Speck
         {
             if (inputBuffer == null)
             {
-                throw new ArgumentNullException(nameof(inputBuffer));
+                throw new ArgumentNullException("inputBuffer");
             }
             if (inputOffset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+                throw new ArgumentOutOfRangeException("inputOffset");
             }
             if (inputCount < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount > inputBuffer.Length - inputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
 
             byte[] outData = null;
@@ -290,30 +285,30 @@ namespace Speck
         {
             if (inputBuffer == null)
             {
-                throw new ArgumentNullException(nameof(inputBuffer));
+                throw new ArgumentNullException("inputBuffer");
             }
             if (inputOffset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+                throw new ArgumentOutOfRangeException("inputOffset");
             }
             if (inputCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount % InputBlockSize != 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount > inputBuffer.Length - inputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (outputBuffer == null) {
-                throw new ArgumentNullException(nameof(outputBuffer));
+                throw new ArgumentNullException("outputBuffer");
             }
             if (inputCount > outputBuffer.Length - outputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(outputOffset));
+                throw new ArgumentOutOfRangeException("outputOffset");
             }
 
             return DecryptBlocks(inputBuffer, inputOffset, inputCount, ref outputBuffer, outputOffset);
@@ -323,19 +318,19 @@ namespace Speck
         {
             if (inputBuffer == null)
             {
-                throw new ArgumentNullException(nameof(inputBuffer));
+                throw new ArgumentNullException("inputBuffer");
             }
             if (inputOffset < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputOffset));
+                throw new ArgumentOutOfRangeException("inputOffset");
             }
             if (inputCount < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             if (inputCount > inputBuffer.Length - inputOffset)
             {
-                throw new ArgumentOutOfRangeException(nameof(inputCount));
+                throw new ArgumentOutOfRangeException("inputCount");
             }
             
             if (inputCount % InputBlockSize != 0)
