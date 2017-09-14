@@ -45,6 +45,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Speck\Pad.cs" />
     <Compile Include="Speck\Speck.cs" />
+    <Compile Include="Speck\SpeckContext.cs" />
+    <Compile Include="Speck\SpeckCTR.cs" />
     <Compile Include="Speck\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
