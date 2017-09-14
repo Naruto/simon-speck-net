@@ -56,8 +56,14 @@ namespace Speck
 
     internal class SpeckContext : IDisposable
     {
-        private const string LibraryName = "Speck";
-        private IntPtr _ctx = IntPtr.Zero;
+#if __IOS__
+        private const string LibraryName = "__Internal";
+#elif UNITY_IOS
+        private const string LibraryName = "__Internal";
+#else
+        private const string LibraryName = "speck";
+#endif
+        private IntPtr _ctx;
 
         [DllImport(LibraryName)]  
         private static extern IntPtr speck_init(int _type, byte[] key, int key_len);
