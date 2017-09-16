@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Speck
+namespace Speck.Internal
 {
     internal static class Utils
     {

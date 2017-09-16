@@ -43,15 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Speck\Pad.cs" />
+    <Compile Include="Speck\Internal\Pad.cs" />
+    <Compile Include="Speck\Internal\SpeckContext.cs" />
+    <Compile Include="Speck\Internal\Utils.cs" />
     <Compile Include="Speck\Speck.cs" />
-    <Compile Include="Speck\SpeckContext.cs" />
     <Compile Include="Speck\SpeckCTR.cs" />
-    <Compile Include="Speck\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\plugins\iOS\libspeck.a" />
-    <Content Include="..\plugins\x64\libspeck.dylib" />
+    <Content Include="..\plugins\x64\libspeck.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\plugins\x64\speck.bundle\Contents\MacOS\speck" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

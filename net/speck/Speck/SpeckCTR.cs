@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 
 namespace Speck
 {
+    using Internal;
     public class SpeckCTR : SymmetricAlgorithm
     {
         private static KeySizes[] legalBlocKeySizeses =
