@@ -49,6 +49,12 @@
     <Compile Include="Speck\SpeckCTR.cs" />
     <Compile Include="Speck\Utils.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\plugins\x64\libspeck.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\plugins\x64\speck.bundle\Contents\MacOS\speck" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
