@@ -50,9 +50,8 @@
     <Compile Include="Speck\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\plugins\x64\libspeck.dylib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="..\plugins\iOS\libspeck.a" />
+    <Content Include="..\plugins\x64\libspeck.dylib" />
     <Content Include="..\plugins\x64\speck.bundle\Contents\MacOS\speck" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
