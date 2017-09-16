@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "speck", "speck/speck.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "speckCLI", "speckCLI\speckCLI.csproj", "{1286878A-2891-4DC9-AB95-322FA88740F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "speckTest", "speckTest\speckTest.csproj", "{465042E4-A31E-467C-AEA4-0D1D35AC0066}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1286878A-2891-4DC9-AB95-322FA88740F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1286878A-2891-4DC9-AB95-322FA88740F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1286878A-2891-4DC9-AB95-322FA88740F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465042E4-A31E-467C-AEA4-0D1D35AC0066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465042E4-A31E-467C-AEA4-0D1D35AC0066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465042E4-A31E-467C-AEA4-0D1D35AC0066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{465042E4-A31E-467C-AEA4-0D1D35AC0066}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
