@@ -5,9 +5,8 @@ SCRIPTDIR=`cd $SCRIPTDIR && pwd -P`
 BASEDIR=${SCRIPTDIR}/..
 BASEDIR=`cd ${BASEDIR} && pwd -P`
 
-pushd ${BASEDIR} > /dev/null
-pushd ./net > /dev/null
+pushd ${BASEDIR}/net > /dev/null
 mono .nuget/nuget.exe restore
 xbuild /p:TargetFrameworkVersion="v4.5"
-popd > /dev/null # ./net
+mono ./packages/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./speckTest/bin/Debug/speckTest.dll
 popd > /dev/null # ${BASEDIR}
