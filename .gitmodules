@@ -1,0 +1,3 @@
+[submodule "modules/simon-speck-c"]
+	path = modules/simon-speck-c
+	url = git@github.com:Naruto/simon-speck-c.git

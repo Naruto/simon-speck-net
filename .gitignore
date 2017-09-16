@@ -52,6 +52,7 @@ _ReSharper*/
 !.nuget/*
 [Pp]ackages/*
 ![Pp]ackages/repositories.config
+packages
 
 # Temporary Files
 ~.*
