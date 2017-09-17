@@ -50,6 +50,11 @@
     <Compile Include="Speck\SpeckCTR.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\plugins\Android\libs\arm64-v8a\libspeck.so" />
+    <Content Include="..\plugins\Android\libs\armeabi-v7a\libspeck.so" />
+    <Content Include="..\plugins\Android\libs\armeabi\libspeck.so" />
+    <Content Include="..\plugins\Android\libs\x86\libspeck.so" />
+    <Content Include="..\plugins\Android\libs\x86_64\libspeck.so" />
     <Content Include="..\plugins\iOS\libspeck.a" />
     <Content Include="..\plugins\x64\libspeck.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -5,9 +5,7 @@ namespace Speck.Internal
 {
     internal class SpeckContext : IDisposable
     {
-#if __IOS__
-        private const string LibraryName = "__Internal";
-#elif UNITY_IOS
+#if LIBSPECK_STATIC
         private const string LibraryName = "__Internal";
 #else
         private const string LibraryName = "speck";
