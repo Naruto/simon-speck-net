@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Speck.Internal
+namespace SimonSpeckNet.Speck
 {
     internal class SpeckContext : IDisposable
     {

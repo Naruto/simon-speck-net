@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Speck.Internal
+namespace SimonSpeckNet.Speck
 {
     internal static class Pad
     {
