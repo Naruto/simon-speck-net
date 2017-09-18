@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using Speck;
+using SimonSpeckNet.Speck;
 
 namespace speckTest
 {
@@ -17,7 +17,7 @@ namespace speckTest
         [Test]
         public void SpeckInit()
         {
-            using (SymmetricAlgorithm algo = new Speck.Speck())
+            using (SymmetricAlgorithm algo = new Speck())
             {
                 using (ICryptoTransform encryptor = algo.CreateEncryptor())
                 {
@@ -41,7 +41,7 @@ namespace speckTest
         
         private bool CheckEncryptDecrypt128128(PaddingMode paddingMode)
         {
-            using (SymmetricAlgorithm algo = new Speck.Speck())
+            using (SymmetricAlgorithm algo = new Speck())
             {
                 algo.BlockSize = 128;
                 algo.KeySize = 128;
@@ -82,7 +82,7 @@ namespace speckTest
 
         private bool CheckEncryptDecrypt128128Stream(byte[] plain, PaddingMode paddingMode)
         {
-            using (SymmetricAlgorithm algo = new Speck.Speck())
+            using (SymmetricAlgorithm algo = new Speck())
             {
                 algo.BlockSize = 128;
                 algo.KeySize = 128;

@@ -45,13 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\speck\speck.csproj">
+    <ProjectReference Include="..\SimonSpeckNet\SimonSpeckNet.csproj">
       <Project>{a6940856-6937-4146-8598-e0d2a34dba3b}</Project>
-      <Name>speck</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\speck\speck.csproj">
-      <Project>{a6940856-6937-4146-8598-e0d2a34dba3b}</Project>
-      <Name>speck</Name>
+      <Name>SimonSpeckNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
