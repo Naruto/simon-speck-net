@@ -39,6 +39,7 @@ pushd build_unity > /dev/null
 /bin/cp -r ${BASEDIR}/unity/SimonSpeckNet.dll.meta Assets/Plugins/x64/
 /bin/cp -r ${BASEDIR}/unity/libspeck.so.meta Assets/Plugins/x64/
 /bin/cp -r ${BASEDIR}/unity/speck.bundle.meta Assets/Plugins/x64/
+/bin/cp -r ${BASEDIR}/unity/speck.dll.meta Assets/Plugins/x64/
 
 /bin/cp -r ${BASEDIR}/unity/SpeckSample Assets/
 
