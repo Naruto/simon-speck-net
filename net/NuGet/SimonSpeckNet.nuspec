@@ -14,28 +14,28 @@
     <tags>simon speck cryptography crypto security encryption lightweight symmetric</tags>
   </metadata>
   <files>
-    <file src="../SimonSpeckNet/bin/$Configuration$/SimonSpeckNet.dll" target="lib/netstandard1.4" />
-    <file src="../SimonSpeckNet/bin/$Configuration$/SimonSpeckNet.dll" target="lib/uap" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netstandard1.4" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/uap" />
     
     <!-- Targets file adds adds references to native libs -->
-    <file src="SimonSpeckNet.targets" target="build" />
+    <file src="NuGet/SimonSpeckNet.targets" target="build" />
 
-    <file src="../plugins/x64/speck.dll" target="runtimes/win-x64/native" />
-    <file src="../plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
-    <file src="../plugins/x64/libspeck.so" target="runtimes/linux-x64/native" />
+    <file src="plugins/x64/speck.dll" target="runtimes/win-x64/native" />
+    <file src="plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
+    <file src="plugins/x64/libspeck.so" target="runtimes/linux-x64/native" />
 
     <!-- Android -->  
-    <file src="Android/SimonSpeckNet.targets" target="build/MonoAndroid"/>
-    <file src="../SimonSpeckNet/bin/$Configuration$/SimonSpeckNet.dll" target="lib/MonoAndroid/SimonSpeckNet.dll"/>
-    <file src="../plugins/Android/libs/armeabi/libspeck.so" target="native/android/armeabi/libspeck.so" />
-    <file src="../plugins/Android/libs/armeabi-v7a/libspeck.so" target="native/android/armeabi-v7a/libspeck.so" />
-    <file src="../plugins/Android/libs/arm64-v8a/libspeck.so" target="native/android/arm64-v8a/libspeck.so" />
-    <file src="../plugins/Android/libs/x86/libspeck.so" target="native/android/x86/libspeck.so" />
-    <file src="../plugins/Android/libs/x86_64/libspeck.so" target="native/android/x86_64/libspeck.so" />
+    <file src="NuGet/Android/SimonSpeckNet.targets" target="build/MonoAndroid"/>
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/MonoAndroid"/>
+    <file src="plugins/Android/libs/armeabi/libspeck.so" target="native/android/armeabi" />
+    <file src="plugins/Android/libs/armeabi-v7a/libspeck.so" target="native/android/armeabi-v7a" />
+    <file src="plugins/Android/libs/arm64-v8a/libspeck.so" target="native/android/arm64-v8a" />
+    <file src="plugins/Android/libs/x86/libspeck.so" target="native/android/x86" />
+    <file src="plugins/Android/libs/x86_64/libspeck.so" target="native/android/x86_64" />
 
     <!-- iOS -->
-    <file src="iOS/SimonSpeckNet.targets" target="build/XamariniOS"/>
-    <file src="../SimonSpeckNetStatic/bin/$Configuration$/SimonSpeckNetStatic.dll" target="lib/XamariniOS/SimonSpeckNet.dll"/>
-    <file src="../plugins/iOS/libspeck.a" target="native/ios/libspeck.a"/>
+    <file src="NuGet/iOS/SimonSpeckNet.targets" target="build/XamariniOS"/>
+    <file src="SimonSpeckNetStatic/bin/Release/SimonSpeckNetStatic.dll" target="lib/XamariniOS/SimonSpeckNet.dll"/>
+    <file src="plugins/iOS/libspeck.a" target="native/ios"/>
   </files>
 </package>
