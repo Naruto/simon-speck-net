@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>SimonSpeckNet</id>
-    <version>0.1.0-alpha</version>
+    <version>0.1.2</version>
     <authors>Naruto TAKAHASHI</authors>
     <owners>Naruto TAKAHASHI</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
@@ -19,8 +19,9 @@
     <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/win" />
     <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netstandard" />
 
+    <file src="NuGet/SimonSpeckNet.targets" target="build/" />
     <file src="plugins/x64/speck.dll" target="runtimes/win-x64/native" />
-    <file src="plugins/x64/libspeck.dylib" target="runtimes/osx.10.10-x64/native" />
+    <file src="plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
     <file src="plugins/x64/libspeck.so" target="runtimes/linux-x64/native" />
 
     <!-- Android -->  
