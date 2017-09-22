@@ -32,8 +32,6 @@ install:
   - cmake --version
   - popd
 script:
-
-  - ./scripts/build.sh
   - |
     if [[ "${COVERITY_SCAN_BRANCH}" != 1 ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       ./scripts/plugins/deploy_linux.sh
