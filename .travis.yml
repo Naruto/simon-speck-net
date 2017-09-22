@@ -1,13 +1,17 @@
 language: csharp
-dist: trusty
 solution: net/simon-speck-net.sln
+
 mono:
   - latest
   - 3.8.0
+
 matrix:
   include:
     - os: osx
     - os: linux
+      sudo: yes
+      dist: trusty
+
 git:
     submodules: false
 before_install:
@@ -32,6 +36,7 @@ install:
     fi
   - cmake --version
   - popd
+
 script:
   - |
     if [[ "${COVERITY_SCAN_BRANCH}" != 1 ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
