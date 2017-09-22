@@ -1,7 +1,24 @@
 <?xml version="1.0"  encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <_RealmNugetNativePath>$(MSBuildThisFileDirectory)..\native\</_RealmNugetNativePath>
-  </PropertyGroup>
+  <ItemGroup>
+    <!-- Windows -->
+    <None Include="$(MSBuildThisFileDirectory)..\runtimes\win-x64\native\speck.dll">
+      <Link>speck.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <!-- macOS -->
+    <None Include="$(MSBuildThisFileDirectory)..\runtimes\osx-x64\native\libspeck.dylib">
+      <Link>libspeck.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <!-- linux -->
+    <None Include="$(MSBuildThisFileDirectory)..\runtimes\linux-x64\native\libspeck.so">
+      <Link>libspeck.so</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+  </ItemGroup>
 </Project>
 
