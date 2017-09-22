@@ -3,5 +3,14 @@ solution: net/simon-speck-net.sln
 mono:
   - latest
   - 3.8.0
+matrix:
+  include:
+    - os: osx
+    - os: linux
+git:
+    submodules: false
+before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
 script:
   - build.sh
