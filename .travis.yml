@@ -1,10 +1,6 @@
 language: csharp
 solution: net/simon-speck-net.sln
 
-mono:
-  - latest
-  - 3.8.0
-
 matrix:
   include:
     - os: osx
