@@ -11,7 +11,8 @@ matrix:
 git:
     submodules: false
 before_install:
-    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+    - sed -i '' 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
