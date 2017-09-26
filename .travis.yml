@@ -1,18 +1,31 @@
 language: csharp
 solution: net/simon-speck-net.sln
 
+env:
+  global:
+  - secure: "ghRzqjJdO3FeEiLaBgVJSHC+eoAQDXa8mpO4tlhy4twJtnbe2FEDt5LDc8hv9rux9TITkmvkOQr6hdUGxOxJVoBUgqslxW2X2mayiD+aFdJxFYqgfVeJ2hARzbIm3lnFBQAh0RzhoPfugP6GdIw49EteWo1cJMe3SHiPkNkbt8G5G09qU7W7tmNvf3bTKvjA8YKHLYACd+AUwuiW462lkhzocRdTOGj6slSTMLlUWA5TTQqdMA0weW29O6GFBTa7zH6kcbnJc5hynT03k3OhzxXSA7nbL3YnT703U0aK9xatQWGSTvZEx4UHrOrH0rEM+FsxF36R6+18ayTKwoaE9FBG5lXpfgC299l+FlPlR8Q9/WA6ivg3bIlHFUcw87ES5aQVv7Ze2mBtEX/WzLZ3+CrYaA7RpE6+cDEzfVyWMML/RxyUPrxnNbQxldBOspBhDdXL4C/SyF4gZEMImrjysQshry7NoQHKrMMAR95J+0x7MZDt79pkSSA8/A+uCWz2rSbRX8ftNYP6eOB5LzNQMghB8FFsh/CtgBxeEecsACC5aQRtWMHZnNGqBV4sXJrCoaZlomjpIIbopLztHG4F/LgaY/lxNmatd6krm+MI8Jc8+7gU4SyZPKyWXKR60+9W45txmrNbBjeZYv+ymLFLbkny1POdGE2rPAfPI/grDBg="
+
 matrix:
   include:
     - os: osx
     - os: linux
       sudo: yes
       dist: trusty
+      addons:
+        coverity_scan:
+          project:
+            name: "Naruto/simon-speck-net"
+            description: "<Your project description here>"
+          notification_email: tnaruto@gmail.com
+          build_command_prepend: "cd net"
+          build_command: xbuild /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release
+          branch_pattern: develop
 
 git:
     submodules: false
 before_install:
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-    - git submodule update --init --recursive
+
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir -p ${DEPS_DIR}
@@ -40,6 +53,7 @@ before_script:
     else
       sed -i '' 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     fi
+  - git submodule update --init --recursive
 
 script:
   - |
