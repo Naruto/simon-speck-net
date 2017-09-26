@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Naruto/simon-speck-net.svg?branch=develop)](https://travis-ci.org/Naruto/simon-speck-net?branch=develop)
 [![NuGet version](https://badge.fury.io/nu/simonspecknet.svg)](https://badge.fury.io/nu/simonspecknet)
 # simon-speck-net
 
