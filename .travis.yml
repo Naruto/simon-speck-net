@@ -10,9 +10,7 @@ matrix:
 
 git:
     submodules: false
-before_install:
-    - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-    - git submodule update --init --recursive
+
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir -p ${DEPS_DIR}
@@ -40,6 +38,7 @@ before_script:
     else
       sed -i '' 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     fi
+  - git submodule update --init --recursive
 
 script:
   - |
