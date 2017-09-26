@@ -12,7 +12,6 @@ git:
     submodules: false
 before_install:
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-    - sed -i '' 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
 install:
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
@@ -33,6 +32,14 @@ install:
     fi
   - cmake --version
   - popd
+
+before_script:
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    else
+      sed -i '' 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    fi
 
 script:
   - |
