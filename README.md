@@ -6,6 +6,47 @@
 
 c# binding of [Naruto/simon-speck-c](https://github.com/Naruto/simon-speck-c)
 
+# Sample
+
+simple encrypt and decrypt code.
+
+```csharp
+String plainText = "test text abcdefg.";
+byte[] plainByte = System.Text.Encoding.ASCII.GetBytes(plainText);
+
+// Speck ECB mode
+using (SymmetricAlgorithm algo = new Speck())
+{
+    algo.BlockSize = 128;
+    algo.KeySize = 128;
+    
+    algo.GenerateKey();
+    using (ICryptoTransform encryptor = algo.CreateEncryptor() , decryptor = algo.CreateDecryptor())
+    {
+        byte[] plainEnc = encryptor.TransformFinalBlock(plainByte, 0, plainByte.Length);
+        byte[] plainDec = decryptor.TransformFinalBlock(plainEnc, 0, plainEnc.Length);
+        Console.WriteLine(System.Text.Encoding.ASCII.GetString(plainDec));
+        Console.WriteLine();
+    }
+}
+
+// Speck CTR mode
+using (SymmetricAlgorithm algo = new SpeckCTR())
+{
+    algo.BlockSize = 128;
+    algo.KeySize = 128;
+    
+    algo.GenerateIV();
+    algo.GenerateKey();
+    using (ICryptoTransform encryptor = algo.CreateEncryptor() , decryptor = algo.CreateDecryptor())
+    {
+        byte[] plainEnc = encryptor.TransformFinalBlock(plainByte, 0, plainByte.Length);
+        byte[] plainDec = decryptor.TransformFinalBlock(plainEnc, 0, plainEnc.Length);
+        Console.WriteLine(System.Text.Encoding.ASCII.GetString(plainDec));
+        Console.WriteLine();
+    }
+}
+```
 
 # development
 ## preapre
