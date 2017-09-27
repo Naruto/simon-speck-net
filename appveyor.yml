@@ -1,0 +1,14 @@
+os:
+  - Visual Studio 2015
+
+build:
+  verbosity: detailed
+
+configuration:
+  - Release
+
+before_build:
+  - cd net
+  - nuget restore
+  - cd ..
+

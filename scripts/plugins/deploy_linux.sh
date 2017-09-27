@@ -2,7 +2,7 @@
 
 SCRIPTDIR=`dirname $0`
 SCRIPTDIR=`cd $SCRIPTDIR && pwd -P`
-BASEDIR=${SCRIPTDIR}/..
+BASEDIR=${SCRIPTDIR}/../..
 BASEDIR=`cd ${BASEDIR} && pwd -P`
 
 pushd ${BASEDIR} > /dev/null
