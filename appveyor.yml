@@ -1,14 +1,62 @@
-os:
-  - Visual Studio 2015
+environment:
+  CoverityProjectToken:
+    secure: MZmARnzmRhTF743Xy+O1yOt9nIxnKiU6fA0vj+G2u0s=
+  CoverityNotificationEmail:
+    secure: owEKixY5H4KyQUZ3NCsb8yHTPmle5BZ+JRqfCMCzMjg=
+
+configuration:
+  - All
+  - Coverity
+
+matrix:
+  exclude:
+    - configuration: All
+      image: Visual Studio 2017
+    - configuration: Coverity
+      image: Visual Studio 2017
+max_jobs: 1
 
 build:
   verbosity: detailed
-
-configuration:
-  - Release
 
 before_build:
   - cd net
   - nuget restore
   - cd ..
 
+build_script:
+  - cd net
+  - ps: |
+      if ($env:CONFIGURATION -eq "Coverity") {
+        $buildArgs = @(
+        "/m",
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
+        "/p:Configuration=Debug",
+        "simon-speck-net.sln")
+        & cov-build.exe --dir cov-int msbuild $buildArgs
+
+        nuget install -ExcludeVersion PublishCoverity
+        Write-Host "Compressing Coverity results..."
+        & PublishCoverity\tools\PublishCoverity.exe compress --nologo -i "$env:APPVEYOR_BUILD_FOLDER\net\cov-int" -o "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" --overwrite
+
+        Write-Host "Uploading Coverity results..."
+        & PublishCoverity\tools\PublishCoverity.exe publish --nologo -t "$env:CoverityProjectToken" -e "$env:CoverityNotificationEmail" -r "Naruto/simon-speck-net" -z "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" -d "Appveyor build." --codeVersion "$env:APPVEYOR_BUILD_VERSION"
+      } else {
+        $buildArgs = @(
+        "/m",
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
+        "/p:Configuration=Debug",
+        "simon-speck-net.sln")
+        & msbuild $buildArgs
+      }
+
+  - cd ..
+
+after_build:
+  - cd net
+  - ps: |
+      if ($env:CONFIGURATION -eq "All") {
+        & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
+      }
+
+  - cd ..
