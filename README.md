@@ -1,18 +1,22 @@
+[![NuGet version](https://badge.fury.io/nu/simonspecknet.svg)](https://badge.fury.io/nu/simonspecknet)
 # simon-speck-net
 
 c# binding of [Naruto/simon-speck-c](https://github.com/Naruto/simon-speck-c)
 
-# preapre
+
+# development
+## preapre
 
 - mono
+- Unity (if create unity package)
 
-# get source
+## get source
 
 ```bash
 git clone --recursive git@github.com:Naruto/simon-speck-net.git
 ```
 
-# build
+## build
 
 build simon-speck-net and nunit test.
 
@@ -31,13 +35,20 @@ cd /path/to/simon-speck-net
 ./scripts/build.sh
 ```
 
+## create nuget package
 
-# build unity package
+```bash
+cd /path/to/simon-speck-net
+./scripts/create_nuget.sh
+```
+
+SimonSpeckNet nuget package file is outputted to `out/net` directory.
+
+## create unity package
 
 ```bash
 cd /path/to/simon-speck-net
 ./scripts/create_unitypackage.sh
 ```
 
-SimonSpeckNet unitypackage is outputted to `out` directory.
-
+SimonSpeckNet unitypackage file is outputted to `out/unity` directory.
