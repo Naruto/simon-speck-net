@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Naruto/simon-speck-net.svg?branch=develop)](https://travis-ci.org/Naruto/simon-speck-net?branch=develop)
+[![Windows Build status](https://ci.appveyor.com/api/projects/status/uulln99smanqi05k?svg=true)](https://ci.appveyor.com/project/Naruto/simon-speck-net)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/13827/badge.svg)](https://scan.coverity.com/projects/13827)
 [![NuGet version](https://badge.fury.io/nu/simonspecknet.svg)](https://badge.fury.io/nu/simonspecknet)
 # simon-speck-net
 
