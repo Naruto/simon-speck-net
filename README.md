@@ -2,6 +2,7 @@
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/uulln99smanqi05k?svg=true)](https://ci.appveyor.com/project/Naruto/simon-speck-net)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/13827/badge.svg)](https://scan.coverity.com/projects/13827)
 [![NuGet version](https://badge.fury.io/nu/simonspecknet.svg)](https://badge.fury.io/nu/simonspecknet)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net?ref=badge_shield)
 # simon-speck-net
 
 c# binding of [Naruto/simon-speck-c](https://github.com/Naruto/simon-speck-c)
@@ -96,3 +97,7 @@ cd /path/to/simon-speck-net
 ```
 
 SimonSpeckNet unitypackage file is outputted to `out/unity` directory.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net?ref=badge_large)
