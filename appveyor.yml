@@ -40,7 +40,7 @@ build_script:
         & PublishCoverity\tools\PublishCoverity.exe compress --nologo -i "$env:APPVEYOR_BUILD_FOLDER\net\cov-int" -o "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" --overwrite
 
         Write-Host "Uploading Coverity results..."
-        & PublishCoverity\tools\PublishCoverity.exe publish --nologo -t "$env:CoverityProjectToken" -e "$env:CoverityNotificationEmail" -r "Naruto/simon-speck-net" -z "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" -d "Appveyor build." --codeVersion "$env:APPVEYOR_BUILD_VERSION_$env:APPVEYOR_REPO_BRANCH"
+        & PublishCoverity\tools\PublishCoverity.exe publish --nologo -t "$env:CoverityProjectToken" -e "$env:CoverityNotificationEmail" -r "Naruto/simon-speck-net" -z "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" -d "Appveyor build." 
       } else {
         $buildArgs = @(
         "/m",
