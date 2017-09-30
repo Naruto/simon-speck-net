@@ -16,12 +16,11 @@ build_script:
   - cd net
   - ps: |
       if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
-        $buildArgs = @(
-        "/m",
-        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
-        "/p:Configuration=Debug",
-        "simon-speck-net.sln")
-        & cov-build.exe --dir cov-int msbuild $buildArgs
+        & cov-build.exe --dir cov-int msbuild `
+        "/m" `
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
+        "/p:Configuration=Debug" `
+        "simon-speck-net.sln"
 
         nuget install -ExcludeVersion PublishCoverity
         Write-Host "Compressing Coverity results..."
@@ -32,23 +31,23 @@ build_script:
         --overwrite
 
         Write-Host "Uploading Coverity results..."
-        Write-Host "PublishCoverity\tools\PublishCoverity.exe publish --nologo -t $env:CoverityProjectToken -e $env:CoverityNotificationEmail -r Naruto/simon-speck-net -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip -d Appveyor build."
 
+        $version = Get-Date -format s
         & PublishCoverity\tools\PublishCoverity.exe publish`
         --nologo `
         -t $env:CoverityProjectToken `
         -e $env:CoverityNotificationEmail `
         -r "Naruto/simon-speck-net" `
         -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip `
-        -d "Appveyor build."
+        -d "build." `
+        --codeVersion "$version"
 
       } else {
-        $buildArgs = @(
-        "/m",
-        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
-        "/p:Configuration=Debug",
-        "simon-speck-net.sln")
-        & msbuild $buildArgs
+        & msbuild `
+        "/m" `
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
+        "/p:Configuration=Debug" `
+        "simon-speck-net.sln"
       }
 
   - cd ..
@@ -57,5 +56,5 @@ test_script:
   - cd net
   - ps: |
       & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
-      
+
   - cd ..
