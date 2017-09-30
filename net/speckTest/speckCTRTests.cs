@@ -82,6 +82,62 @@ namespace speckTest
             }
             return true;
         }
+
+        private bool CheckEncryptDecrypt128192Stream(byte[] plain, PaddingMode paddingMode)
+        {
+            using (SymmetricAlgorithm algo = new SpeckCTR())
+            {
+                algo.BlockSize = 128;
+                algo.KeySize = 192;
+                algo.GenerateKey();
+                algo.GenerateIV();
+                algo.Padding = paddingMode;
+
+                using (ICryptoTransform encryptor = algo.CreateEncryptor(), decryptor = algo.CreateDecryptor())
+                {
+                    byte[] encrypted = encryptor.TransformFinalBlock(plain, 0, plain.Length);
+                    byte[] decrypted = decryptor.TransformFinalBlock(encrypted, 0, encrypted.Length);
+
+                    for (int i = 0; i < plain.Length; i++)
+                    {
+                        if (plain[i] != decrypted[i])
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool CheckEncryptDecrypt128256Stream(byte[] plain, PaddingMode paddingMode)
+        {
+            using (SymmetricAlgorithm algo = new SpeckCTR())
+            {
+                algo.BlockSize = 128;
+                algo.KeySize = 256;
+                algo.GenerateKey();
+                algo.GenerateIV();
+                algo.Padding = paddingMode;
+
+                using (ICryptoTransform encryptor = algo.CreateEncryptor(), decryptor = algo.CreateDecryptor())
+                {
+                    byte[] encrypted = encryptor.TransformFinalBlock(plain, 0, plain.Length);
+                    byte[] decrypted = decryptor.TransformFinalBlock(encrypted, 0, encrypted.Length);
+
+                    for (int i = 0; i < plain.Length; i++)
+                    {
+                        if (plain[i] != decrypted[i])
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        
+        // speck ctr 128/128
         
         [Test]
         public void Speck128128BlocksStreamNone()
@@ -219,5 +275,282 @@ namespace speckTest
             Assert.True(result);
         }
 
+        // speck ctr 128/192
+        
+        [Test]
+        public void Speck128192BlocksStreamNone()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.None);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+
+        [Test]
+        public void Speck128192BlocksStreamZeros()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.Zeros);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192BlockStreamANSIX923()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.ANSIX923);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192BlockStreamISO10126()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.ISO10126);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192BlockStreamPKCS7()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.PKCS7);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+
+        
+        [Test]
+        public void Speck128192ByteStreamZeros()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.Zeros);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192ByteStreamANSIX923()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.ANSIX923);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192ByteStreamISO10126()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.ISO10126);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128192ByteStreamPKCS7()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.PKCS7);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+
+        
+        // speck ctr 128/256
+        
+        [Test]
+        public void Speck128256BlocksStreamNone()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.None);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+
+        [Test]
+        public void Speck128256BlocksStreamZeros()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.Zeros);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256BlockStreamANSIX923()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.ANSIX923);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256BlockStreamISO10126()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.ISO10126);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256BlockStreamPKCS7()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom(16 * (i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.PKCS7);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+
+        
+        [Test]
+        public void Speck128256ByteStreamZeros()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.Zeros);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256ByteStreamANSIX923()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.ANSIX923);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256ByteStreamISO10126()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.ISO10126);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
+        [Test]
+        public void Speck128256ByteStreamPKCS7()
+        {
+            bool result = true;
+            byte[] plain;
+            for (int i = 0; i < testNum; i++)
+            {
+                plain = getRandom((i+1));
+                result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.PKCS7);
+                if (result == false)
+                    break;
+            }
+            Assert.True(result);
+        }
+        
     }
 }

@@ -33,7 +33,7 @@ namespace SimonSpeckNet.Speck
 
         private static KeySizes[] legalKeySizes =
         {
-            new KeySizes(128, 128, 0),
+            new KeySizes(128, 256, 64), 
         };
 
         public Speck()
@@ -61,7 +61,7 @@ namespace SimonSpeckNet.Speck
 
         public override void GenerateIV()
         {
-            byte[] data = new byte[KeySizeValue / 8];
+            byte[] data = new byte[BlockSizeValue / 8];
             Utils.getRNG().GetBytes(data);
             IVValue = data;
         }

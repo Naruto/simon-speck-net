@@ -56,15 +56,29 @@ namespace SimonSpeckNet.Speck
 
         [DllImport(LibraryName)]
         private static extern void speck_finish(ref IntPtr ctx);
-        
+
         public SpeckContext(byte[] rgbKey)
         {
             if (rgbKey == null || rgbKey.Length <= 0)
             {
                 throw new ArgumentException();
             }
+
+            int encryptType = 7;
+            switch (rgbKey.Length)
+            {
+                case 16: // 128 bit
+                    encryptType = 7; // 7: SPECK_ENCRYPT_TYPE_128_128
+                    break;
+                case 24: // 192 bit  
+                    encryptType = 8; // 8: SPECK_ENCRYPT_TYPE_128_192
+                    break;
+                case 32: // 256 bit
+                    encryptType = 9; // 8: SPECK_ENCRYPT_TYPE_128_256
+                    break;
+            }
             
-            _ctx = speck_init(7, rgbKey, rgbKey.Length); // 7: SPECK_ENCRYPT_TYPE_128_128
+            _ctx = speck_init(encryptType, rgbKey, rgbKey.Length);
             if (_ctx == IntPtr.Zero)
             {
                 throw new ArgumentException();                
