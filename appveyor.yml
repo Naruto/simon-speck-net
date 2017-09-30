@@ -1,9 +1,3 @@
-configuration:
-  - Release
-  - Coverity
-
-max_jobs: 1
-
 environment:
   CoverityProjectToken:
     secure: MZmARnzmRhTF743Xy+O1yOt9nIxnKiU6fA0vj+G2u0s=
@@ -21,7 +15,7 @@ before_build:
 build_script:
   - cd net
   - ps: |
-      if ($env:CONFIGURATION -eq "Coverity" -and $env:APPVEYOR_REPO_BRANCH -eq "develop") {
+      if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
         $buildArgs = @(
         "/m",
         "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll",
@@ -59,11 +53,9 @@ build_script:
 
   - cd ..
 
-after_build:
+test_script:
   - cd net
   - ps: |
-      if ($env:CONFIGURATION -eq "Release") {
-        & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
-      }
-
+      & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
+      
   - cd ..
