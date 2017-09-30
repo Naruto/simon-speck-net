@@ -5,12 +5,12 @@ environment:
     secure: owEKixY5H4KyQUZ3NCsb8yHTPmle5BZ+JRqfCMCzMjg=
 
 configuration:
-  - All
+  - Release
   - Coverity
 
 matrix:
   exclude:
-    - configuration: All
+    - configuration: Release
       image: Visual Studio 2017
     - configuration: Coverity
       image: Visual Studio 2017
@@ -40,9 +40,10 @@ build_script:
         & PublishCoverity\tools\PublishCoverity.exe compress --nologo -i "$env:APPVEYOR_BUILD_FOLDER\net\cov-int" -o "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" --overwrite
 
         Write-Host "Uploading Coverity results..."
-        Write-Host "PublishCoverity\tools\PublishCoverity.exe publish --nologo -t \"$env:CoverityProjectToken\" -e \"$env:CoverityNotificationEmail\" -r \"Naruto/simon-speck-net\" -z \"$env:APPVEYOR_BUILD_FOLDER\coverity.zip\" -d \"Appveyor build.\""
+        Write-Host "PublishCoverity\tools\PublishCoverity.exe publish --nologo -t $env:CoverityProjectToken -e $env:CoverityNotificationEmail -r Naruto/simon-speck-net -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip -d Appveyor build."
 
-        & PublishCoverity\tools\PublishCoverity.exe publish --nologo -t "$env:CoverityProjectToken" -e "$env:CoverityNotificationEmail" -r "Naruto/simon-speck-net" -z "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" -d "Appveyor build." 
+        & PublishCoverity\tools\PublishCoverity.exe publish --nologo -t $env:CoverityProjectToken -e $env:CoverityNotificationEmail -r "Naruto/simon-speck-net" -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip -d "Appveyor build."
+
       } else {
         $buildArgs = @(
         "/m",
@@ -57,7 +58,7 @@ build_script:
 after_build:
   - cd net
   - ps: |
-      if ($env:CONFIGURATION -eq "All") {
+      if ($env:CONFIGURATION -eq "Release") {
         & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
       }
 
