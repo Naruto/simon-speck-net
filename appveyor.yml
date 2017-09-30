@@ -33,13 +33,13 @@ build_script:
         Write-Host "Uploading Coverity results..."
 
         $version = Get-Date -format s
-        & PublishCoverity\tools\PublishCoverity.exe publish`
+        & PublishCoverity\tools\PublishCoverity.exe publish `
         --nologo `
         -t $env:CoverityProjectToken `
         -e $env:CoverityNotificationEmail `
         -r "Naruto/simon-speck-net" `
         -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip `
-        -d "build." `
+        -d "Appveyor build." `
         --codeVersion "$version"
 
       } else {
