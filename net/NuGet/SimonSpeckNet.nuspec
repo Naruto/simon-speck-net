@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>SimonSpeckNet</id>
+    <version>0.2</version>
+    <authors>Naruto TAKAHASHI</authors>
+    <owners>Naruto TAKAHASHI</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/Naruto/simon-speck-net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Speck Simon are lightweight block ciphers: those block ciphers are efficiently and provide high performance across a range of devices. This package includes classes that allow you to encrypt and decrypt using native libraries that are using SIMD such as AVX2, NEON.</description>
+    <releaseNotes>- version up simon-speck-c to v0.5
+- support Speck 128/192
+- support SpeckCTR 128/192
+- support Speck 128/256
+- support SpeckCTR 128/256</releaseNotes>
+    <copyright>Copyright 2017 Naruto TAKAHASHI</copyright>
+    <tags>simon speck cryptography crypto security encryption lightweight symmetric Xamarin iOS Android macOS linux</tags>
+  </metadata>
+  <files>
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/net" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netcore" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/win" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netstandard" />
+
+    <file src="NuGet/SimonSpeckNet.targets" target="build/" />
+    <file src="plugins/x64/speck.dll" target="runtimes/win-x64/native" />
+    <file src="plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
+    <file src="plugins/x64/libspeck.so" target="runtimes/linux-x64/native" />
+
+    <!-- Android -->  
+    <file src="NuGet/Android/SimonSpeckNet.targets" target="build/MonoAndroid"/>
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/MonoAndroid"/>
+    <file src="plugins/Android/libs/armeabi/libspeck.so" target="native/android/armeabi" />
+    <file src="plugins/Android/libs/armeabi-v7a/libspeck.so" target="native/android/armeabi-v7a" />
+    <file src="plugins/Android/libs/arm64-v8a/libspeck.so" target="native/android/arm64-v8a" />
+    <file src="plugins/Android/libs/x86/libspeck.so" target="native/android/x86" />
+    <file src="plugins/Android/libs/x86_64/libspeck.so" target="native/android/x86_64" />
+
+    <!-- iOS -->
+    <file src="NuGet/iOS/SimonSpeckNet.targets" target="build/XamariniOS"/>
+    <file src="SimonSpeckNetStatic/bin/Release/SimonSpeckNetStatic.dll" target="lib/XamariniOS/SimonSpeckNet.dll"/>
+    <file src="plugins/iOS/libspeck.a" target="native/ios"/>
+  </files>
+</package>

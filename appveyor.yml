@@ -1,0 +1,60 @@
+environment:
+  CoverityProjectToken:
+    secure: MZmARnzmRhTF743Xy+O1yOt9nIxnKiU6fA0vj+G2u0s=
+  CoverityNotificationEmail:
+    secure: owEKixY5H4KyQUZ3NCsb8yHTPmle5BZ+JRqfCMCzMjg=
+
+build:
+  verbosity: detailed
+
+before_build:
+  - cd net
+  - nuget restore
+  - cd ..
+
+build_script:
+  - cd net
+  - ps: |
+      if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
+        & cov-build.exe --dir cov-int msbuild `
+        "/m" `
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
+        "/p:Configuration=Debug" `
+        "simon-speck-net.sln"
+
+        nuget install -ExcludeVersion PublishCoverity
+        Write-Host "Compressing Coverity results..."
+        & PublishCoverity\tools\PublishCoverity.exe compress `
+        --nologo `
+        -i "$env:APPVEYOR_BUILD_FOLDER\net\cov-int" `
+        -o "$env:APPVEYOR_BUILD_FOLDER\coverity.zip" `
+        --overwrite
+
+        Write-Host "Uploading Coverity results..."
+
+        $version = Get-Date -format s
+        & PublishCoverity\tools\PublishCoverity.exe publish `
+        --nologo `
+        -t $env:CoverityProjectToken `
+        -e $env:CoverityNotificationEmail `
+        -r "Naruto/simon-speck-net" `
+        -z $env:APPVEYOR_BUILD_FOLDER\coverity.zip `
+        -d "Appveyor build." `
+        --codeVersion "$version"
+
+      } else {
+        & msbuild `
+        "/m" `
+        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
+        "/p:Configuration=Debug" `
+        "simon-speck-net.sln"
+      }
+
+  - cd ..
+
+test_script:
+  - cd net
+  - ps: |
+      & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
+
+  - cd ..
