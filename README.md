@@ -5,7 +5,30 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net?ref=badge_shield)
 # simon-speck-net
 
-c# binding of [Naruto/simon-speck-c](https://github.com/Naruto/simon-speck-c)
+c# wrapper implement of [Naruto/simon-speck-c](https://github.com/Naruto/simon-speck-c)
+
+simon and speck are lightweight block cipher algorithms, published by NSA.([iadgov/simon-speck](https://github.com/iadgov/simon-speck))
+
+support platforms are Desktop Platforms(Windows, macOS, Linux), Xamarin iOS and MonoAndroid.
+
+# Supports
+
+- algorithms and block sizes, key sizes and modes
+    - speck ECB
+        - 128/128
+        - 128/192
+        - 128/256
+    - speck CTR
+        - 128/128
+        - 128/192
+        - 128/256
+- platforms, architectures
+    - windows x64
+    - macOS x64
+    - linux x64
+    - Xamarin iOS
+    - MonoAndroid
+
 
 # Sample
 
