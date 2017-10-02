@@ -25,6 +25,7 @@ pushd build_unity > /dev/null
 /bin/cp -r ${BASEDIR}/net/plugins/* Assets/Plugins
 # copy dll files
 /bin/cp -r ${BASEDIR}/SimonSpeckNet_Static.dll Assets/Plugins/iOS/
+/bin/cp -r ${BASEDIR}/SimonSpeckNet_Static.dll Assets/Plugins/WebGL/
 /bin/cp -r ${BASEDIR}/SimonSpeckNet.dll Assets/Plugins/Android/
 /bin/cp -r ${BASEDIR}/SimonSpeckNet.dll Assets/Plugins/x64/
 /bin/rm -f ${BASEDIR}/SimonSpeckNet_Static.dll ${BASEDIR}/SimonSpeckNet.dll
