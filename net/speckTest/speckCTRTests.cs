@@ -144,9 +144,9 @@ namespace speckTest
         {
             bool result = true;
             byte[] plain;
-            for (int i = 0; i < testNum; i++)
+            for (int i = 0; i < testNum * 16; i++)
             {
-                plain = getRandom(16 * (i+1));
+                plain = getRandom(i+1);
                 result = CheckEncryptDecrypt128128Stream(plain, PaddingMode.None);
                 if (result == false)
                     break;
@@ -282,9 +282,9 @@ namespace speckTest
         {
             bool result = true;
             byte[] plain;
-            for (int i = 0; i < testNum; i++)
+            for (int i = 0; i < testNum * 16; i++)
             {
-                plain = getRandom(16 * (i+1));
+                plain = getRandom(i+1);
                 result = CheckEncryptDecrypt128192Stream(plain, PaddingMode.None);
                 if (result == false)
                     break;
@@ -421,9 +421,9 @@ namespace speckTest
         {
             bool result = true;
             byte[] plain;
-            for (int i = 0; i < testNum; i++)
+            for (int i = 0; i < testNum*16; i++)
             {
-                plain = getRandom(16 * (i+1));
+                plain = getRandom(i+1);
                 result = CheckEncryptDecrypt128256Stream(plain, PaddingMode.None);
                 if (result == false)
                     break;

@@ -45,7 +45,7 @@ namespace SimonSpeckNet.Speck
             LegalKeySizesValue = SpeckCTR.legalKeySizes;
             
             this.ModeValue = CipherMode.ECB;
-            this.PaddingValue = PaddingMode.PKCS7;
+            this.PaddingValue = PaddingMode.None;
         }
         
         public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV)
@@ -166,17 +166,29 @@ namespace SimonSpeckNet.Speck
             }
 
             byte[] outData = null;
-            byte[] tmpData = Pad.PadBlock(_paddingMode, InputBlockSize, inputBuffer, inputOffset, inputCount);
-            if (tmpData.Length > 0)
+            if (_paddingMode == PaddingMode.None)
             {
-                outData = new byte[tmpData.Length];
-                int r = _speckContext.EncryptCTR(tmpData, 0, tmpData.Length, ref outData, 0, ref _iv);  
+                outData = new byte[inputCount];
+                int r = _speckContext.EncryptCTR(inputBuffer, inputOffset, inputCount, ref outData, 0, ref _iv);
                 if (r != 0)
                 {
                     return null;
                 }
             }
-            
+            else
+            {
+                byte[] tmpData = Pad.PadBlock(_paddingMode, InputBlockSize, inputBuffer, inputOffset, inputCount);
+                if (tmpData.Length > 0)
+                {
+                    outData = new byte[tmpData.Length];
+                    int r = _speckContext.EncryptCTR(tmpData, 0, tmpData.Length, ref outData, 0, ref _iv);
+                    if (r != 0)
+                    {
+                        return null;
+                    }
+                }
+            }
+
             Reset();
             
             return outData;
@@ -299,45 +311,55 @@ namespace SimonSpeckNet.Speck
             {
                 throw new ArgumentOutOfRangeException("inputCount");
             }
-            
-            if (inputCount % InputBlockSize != 0)
-            {
-                throw new CryptographicException();
-            }
 
-            if (inputCount % InputBlockSize != 0)
-            {
-                throw new CryptographicException();
-            }
 
             byte[] outputData = null;
-            byte[] cipherText = null;
-
-            if (_depadBuffer == null) {
-                cipherText = new byte[inputCount];
-                Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, 0, inputCount);
-            }
-            else {
-                cipherText = new byte[_depadBuffer.Length + inputCount];
-                Buffer.BlockCopy(_depadBuffer, 0, cipherText, 0, _depadBuffer.Length);
-                Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, _depadBuffer.Length, inputCount);
-                
-            }
-
-            // Decrypt the data, then strip the padding to get the final decrypted data.
-            if (cipherText.Length > 0)
+            if (_paddingMode == PaddingMode.None)
             {
-                byte[] tmpData = new byte[cipherText.Length];
-                int r = _speckContext.DecryptCTR(cipherText, 0, cipherText.Length, ref tmpData, 0, ref _iv);
+                outputData = new byte[inputCount];
+                int r = _speckContext.DecryptCTR(inputBuffer, inputOffset, inputCount, ref outputData, 0, ref _iv);
                 if (r != 0)
                 {
-                    throw new CryptographicException();
+                    return null;
                 }
-                outputData = Pad.DepadBlock(_paddingMode, InputBlockSize, tmpData, 0, tmpData.Length);
             }
             else
             {
-                outputData = new byte[0];
+                if (inputCount % InputBlockSize != 0)
+                {
+                    throw new CryptographicException();
+                }
+
+                byte[] cipherText = null;
+
+                if (_depadBuffer == null)
+                {
+                    cipherText = new byte[inputCount];
+                    Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, 0, inputCount);
+                }
+                else
+                {
+                    cipherText = new byte[_depadBuffer.Length + inputCount];
+                    Buffer.BlockCopy(_depadBuffer, 0, cipherText, 0, _depadBuffer.Length);
+                    Buffer.BlockCopy(inputBuffer, inputOffset, cipherText, _depadBuffer.Length, inputCount);
+
+                }
+
+                // Decrypt the data, then strip the padding to get the final decrypted data.
+                if (cipherText.Length > 0)
+                {
+                    byte[] tmpData = new byte[cipherText.Length];
+                    int r = _speckContext.DecryptCTR(cipherText, 0, cipherText.Length, ref tmpData, 0, ref _iv);
+                    if (r != 0)
+                    {
+                        throw new CryptographicException();
+                    }
+                    outputData = Pad.DepadBlock(_paddingMode, InputBlockSize, tmpData, 0, tmpData.Length);
+                }
+                else
+                {
+                    outputData = new byte[0];
+                }
             }
 
             Reset();
