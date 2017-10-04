@@ -1,5 +1,11 @@
 # Change Log
 
+## v0.3
+
+- version up simon-speck-c to v0.6
+- change SpeckCTR default padding mode to `Padding.None`
+- SpeckCTR allows any length data when setting `Padding.None`. And return values length is same as input data length.
+
 ## v0.2
 
 - version up simon-speck-c to v0.5
