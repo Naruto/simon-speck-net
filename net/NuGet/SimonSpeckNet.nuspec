@@ -2,18 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>SimonSpeckNet</id>
-    <version>0.2</version>
+    <version>0.3</version>
     <authors>Naruto TAKAHASHI</authors>
     <owners>Naruto TAKAHASHI</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/Naruto/simon-speck-net</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Speck Simon are lightweight block ciphers: those block ciphers are efficiently and provide high performance across a range of devices. This package includes classes that allow you to encrypt and decrypt using native libraries that are using SIMD such as AVX2, NEON.</description>
-    <releaseNotes>- version up simon-speck-c to v0.5
-- support Speck 128/192
-- support SpeckCTR 128/192
-- support Speck 128/256
-- support SpeckCTR 128/256</releaseNotes>
+    <description>SIMON and SPECK are families of lightweight block ciphers; those block ciphers are efficient and provide high performances across a wide range of devices. This package includes classes that allow you to encrypt and decrypt using native libraries that are using SIMD such as AVX2 or NEON.</description>
+    <releaseNotes>- version up simon-speck-c to v0.6
+- change SpeckCTR default padding mode to `Padding.None`
+- SpeckCTR allows any length data when setting `Padding.None`. And return values length is same as input data length.
+    </releaseNotes>
     <copyright>Copyright 2017 Naruto TAKAHASHI</copyright>
     <tags>simon speck cryptography crypto security encryption lightweight symmetric Xamarin iOS Android macOS linux</tags>
   </metadata>
