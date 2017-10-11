@@ -121,6 +121,47 @@ cd /path/to/simon-speck-net
 
 SimonSpeckNet unitypackage file is outputted to `out/unity` directory.
 
+## update native library
 
-## License
+update simon-speck-c sumobule
+
+```
+git submodule update --init --recursive
+```
+
+### Android
+
+```
+export NDK_ROOT=/path/to/android-ndk-path
+./scripts/plugins/deploy_android.sh
+```
+
+deploy each archtectures library files to `net/plugins/Android/libs`
+
+### iOS
+```
+./scripts/pluginsdeploy_ios.sh
+```
+
+deploy fat library file to `net/plugins/iOS`
+
+### Linux
+
+```
+./scripts/plugins/deploy_linux.sh
+```
+deploy .so file to `net/plugins/x64`
+
+### macOS
+
+```
+./scripts/plugins/deploy_mac.sh
+```
+
+deploy .dylib and .bundle files to `net/plugins/x64`
+
+### Windows
+T.B.D
+
+# License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FNaruto%2Fsimon-speck-net?ref=badge_large)
