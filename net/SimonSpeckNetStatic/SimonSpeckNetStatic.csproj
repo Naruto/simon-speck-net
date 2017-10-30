@@ -44,6 +44,7 @@
     <Compile Include="..\SimonSpeckNet\Speck\Internal\Utils.cs" />
     <Compile Include="..\SimonSpeckNet\Speck\Speck.cs" />
     <Compile Include="..\SimonSpeckNet\Speck\SpeckCTR.cs" />
+    <Compile Include="..\SimonSpeckNet\Speck\SpeckStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\plugins\iOS\libspeck.a">
