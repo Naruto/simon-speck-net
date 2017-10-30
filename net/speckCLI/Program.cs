@@ -21,9 +21,11 @@
 //
 
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using SimonSpeckNet.Speck;
+using SimonSpeckNet.SpeckSteram;
 
 namespace speckCLI
 {
@@ -306,6 +308,82 @@ namespace speckCLI
                 }
             }
             Console.WriteLine();
+            
+            // speck stream
+            using (SymmetricAlgorithm algo = new Speck())
+            {
+                byte[] key = new byte[16]   { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+                algo.BlockSize = 128;
+                algo.KeySize = 128;
+                algo.Key = key;
+                
+                byte[] plain = new byte[16] { 0x20, 0x6d, 0x61, 0x64, 0x65, 0x20, 0x69, 0x74, 0x20, 0x65, 0x71, 0x75, 0x69, 0x76, 0x61, 0x6c };
+                byte[] output;
+                byte[] decrypt = new byte[16];
+
+                // write(encrypt)
+                {
+                    MemoryStream ms = new MemoryStream();
+                    using (SpeckStream stream = new SpeckStream(ms, algo, SpeckStreamMode.Write))
+                    {
+                        stream.Write(plain, 0, plain.Length);
+                        stream.FlushFinalBlock();
+                        output = ms.ToArray();
+                        Console.WriteLine("encrypt: " + BitConverter.ToString(output));
+                    }
+                }
+
+                //read(decrypt)
+                {
+                    MemoryStream ms = new MemoryStream(output);
+                    using (SpeckStream stream = new SpeckStream(ms, algo, SpeckStreamMode.Read))
+                    {
+                        stream.Read(decrypt, 0, decrypt.Length);
+                        Console.WriteLine("decrypt: " + BitConverter.ToString(decrypt));
+                    }
+                }
+            }
+            
+            // speck stream seek
+            using (SymmetricAlgorithm algo = new Speck())
+            {
+                byte[] key = new byte[16]   { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+                algo.BlockSize = 128;
+                algo.KeySize = 128;
+                algo.Key = key;
+
+                int size = 1040;
+                byte[] plain = new byte[size];
+                byte[] output = new byte[size];
+                byte[] decrypt = new byte[size];
+
+                Random cRandom = new System.Random();
+                cRandom.NextBytes(plain);
+                
+                // write(encrypt)
+                {
+                    MemoryStream ms = new MemoryStream();
+                    using (SpeckStream stream = new SpeckStream(ms, algo, SpeckStreamMode.Write))
+                    {
+                        stream.Write(plain, 0, plain.Length - 16);
+                        stream.Seek(1024, SeekOrigin.Begin);
+                        stream.Write(plain, plain.Length - 16, 16);
+                        stream.FlushFinalBlock();
+                        output = ms.ToArray();
+                        Console.WriteLine("encrypt: " + BitConverter.ToString(output));
+                    }
+                }
+
+                //read(decrypt)
+                {
+                    MemoryStream ms = new MemoryStream(output);
+                    using (SpeckStream stream = new SpeckStream(ms, algo, SpeckStreamMode.Read))
+                    {
+                        stream.Read(decrypt, 0, decrypt.Length);
+                        Console.WriteLine("decrypt: " + BitConverter.ToString(decrypt));
+                    }
+                }
+            }
         }
     }
 }
