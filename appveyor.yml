@@ -9,6 +9,11 @@ environment:
 build:
   verbosity: detailed
 
+before_build:
+  - cd net
+  - nuget restore
+  - cd ..
+
 build_script:
   - ps: |
       if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
