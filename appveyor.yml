@@ -1,3 +1,5 @@
+os:
+  - Visual Studio 2017
 environment:
   CoverityProjectToken:
     secure: MZmARnzmRhTF743Xy+O1yOt9nIxnKiU6fA0vj+G2u0s=
@@ -7,15 +9,11 @@ environment:
 build:
   verbosity: detailed
 
-before_build:
-  - cd net
-  - nuget restore
-  - cd ..
-
 build_script:
-  - cd net
   - ps: |
       if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
+        & cd net
+
         & cov-build.exe --dir cov-int msbuild `
         "/m" `
         "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
@@ -42,19 +40,8 @@ build_script:
         -d "Appveyor build." `
         --codeVersion "$version"
 
+        & cd ..
+
       } else {
-        & msbuild `
-        "/m" `
-        "/l:C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" `
-        "/p:Configuration=Debug" `
-        "simon-speck-net.sln"
+        & ./scripts/build.bat
       }
-
-  - cd ..
-
-test_script:
-  - cd net
-  - ps: |
-      & nunit3-console "$env:APPVEYOR_BUILD_FOLDER\net\speckTest\bin\Debug\speckTest.dll"
-
-  - cd ..
