@@ -14,7 +14,7 @@
 - SpeckCTR allows any length data when setting `Padding.None`. And return values length is same as input data length.
     </releaseNotes>
     <copyright>Copyright 2017 Naruto TAKAHASHI</copyright>
-    <tags>simon speck cryptography crypto security encryption lightweight symmetric Xamarin iOS Android macOS linux</tags>
+    <tags>simon speck cryptography crypto security encryption lightweight symmetric Xamarin iOS Android macOS</tags>
   </metadata>
   <files>
     <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/net" />
@@ -25,7 +25,6 @@
     <file src="NuGet/SimonSpeckNet.targets" target="build/" />
     <file src="plugins/x64/speck.dll" target="runtimes/win-x64/native" />
     <file src="plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
-    <file src="plugins/x64/libspeck.so" target="runtimes/linux-x64/native" />
 
     <!-- Android -->  
     <file src="NuGet/Android/SimonSpeckNet.targets" target="build/MonoAndroid"/>

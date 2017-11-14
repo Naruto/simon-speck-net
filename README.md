@@ -25,7 +25,6 @@ support platforms are Desktop Platforms(Windows, macOS, Linux), Xamarin iOS and 
 - platforms, architectures
     - windows x64
     - macOS x64
-    - linux x64
     - Xamarin iOS
     - MonoAndroid
 

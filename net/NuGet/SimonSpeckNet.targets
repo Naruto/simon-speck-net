@@ -12,13 +12,6 @@
       <Link>libspeck.dylib</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-
-    <!-- linux -->
-    <None Include="$(MSBuildThisFileDirectory)..\runtimes\linux-x64\native\libspeck.so">
-      <Link>libspeck.so</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-
   </ItemGroup>
 </Project>
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.4
+
+- remove linux support
+
 ## v0.3
 
 - version up simon-speck-c to v0.6
