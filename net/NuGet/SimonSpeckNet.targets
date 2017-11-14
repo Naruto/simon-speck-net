@@ -6,5 +6,12 @@
       <Link>speck.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+
+    <!-- macOS -->
+    <None Include="$(MSBuildThisFileDirectory)..\runtimes\osx-x64\native\libspeck.dylib">
+      <Link>libspeck.dylib</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
 
