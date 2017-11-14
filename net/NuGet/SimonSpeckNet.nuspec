@@ -17,15 +17,19 @@
     <tags>simon speck cryptography crypto security encryption lightweight symmetric Xamarin iOS Android macOS</tags>
   </metadata>
   <files>
-    <!-- Windows -->
-    <file src="NuGet/windows/SimonSpeckNet.targets" target="build/win" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/net" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netcore" />
     <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/win" />
+    <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/netstandard" />
+
+    <file src="NuGet/SimonSpeckNet.targets" target="build/" />
     <file src="plugins/x64/speck.dll" target="runtimes/win-x64/native" />
 
     <!-- macOS -->
     <file src="NuGet/macOS/SimonSpeckNet.targets" target="build/XamarinMac"/>
     <file src="SimonSpeckNet/bin/Release/SimonSpeckNet.dll" target="lib/XamarinMac"/>
     <file src="plugins/x64/libspeck.dylib" target="runtimes/osx-x64/native" />
+
 
     <!-- Android -->  
     <file src="NuGet/Android/SimonSpeckNet.targets" target="build/MonoAndroid"/>

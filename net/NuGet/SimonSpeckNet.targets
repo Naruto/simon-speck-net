@@ -2,8 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <!-- Windows -->
-    <None Include="$(MSBuildThisFileDirectory)\..\..\runtimes\win-x64\native\speck.dll">
+    <None Include="$(MSBuildThisFileDirectory)..\runtimes\win-x64\native\speck.dll">
       <Link>speck.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 </Project>
+
