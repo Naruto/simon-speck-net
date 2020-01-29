@@ -3,8 +3,8 @@ solution: net/simon-speck-net.sln
 
 matrix:
   include:
-    - os: osx
-      osx_image: xcode9
+    #- os: osx
+    #  osx_image: xcode9
     - os: linux
       sudo: yes
       dist: trusty
